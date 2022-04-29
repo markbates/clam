@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 type Cmd struct {
@@ -38,7 +37,9 @@ func (c *Cmd) Run(ctx context.Context, args ...string) (*Result, error) {
 
 	cmd := exec.CommandContext(ctx, name, args...)
 	cmd.Dir = c.Dir
-	cmd.Env = os.Environ()
+
+	c.Env = append(c.Env, "GOWORK=off")
+	c.Env = append(c.Env, os.Environ()...)
 
 	stderr := &bytes.Buffer{}
 	cmd.Stderr = stderr
@@ -69,21 +70,4 @@ func (c *Cmd) Run(ctx context.Context, args ...string) (*Result, error) {
 	res.Stdout = stdout.Bytes()
 
 	return res, res.Err
-}
-
-type Result struct {
-	Args   []string
-	Dir    string
-	Env    []string
-	Err    error
-	Exit   int
-	Stderr []byte
-	Stdout []byte
-}
-
-// CmdString returns a string representation of the command.
-// 		$ echo hello
-// 		$ go run maing.go
-func (res Result) CmdString() string {
-	return fmt.Sprintf("$ %s", strings.Join(res.Args, " "))
 }
