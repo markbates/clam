@@ -67,7 +67,10 @@ func (c *Cmd) Run(ctx context.Context, args ...string) (*Result, error) {
 	}
 
 	res.Stderr = stderr.Bytes()
+	res.Stderr = bytes.TrimSpace(res.Stderr)
+
 	res.Stdout = stdout.Bytes()
+	res.Stdout = bytes.TrimSpace(res.Stdout)
 
 	return res, res.Err
 }
