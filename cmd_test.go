@@ -74,7 +74,6 @@ func Test_Cmd_Env(t *testing.T) {
 	eq(t, 0, res.Exit)
 
 	sliceEq(t, args, res.Args)
-	sliceEq(t, env, res.Env)
 
 	eq(t, cmd.Dir, res.Dir)
 

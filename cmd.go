@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"time"
 )
 
 type Cmd struct {
@@ -60,7 +61,9 @@ func (c *Cmd) Run(ctx context.Context, args ...string) (*Result, error) {
 		Exit: -1,
 	}
 
+	now := time.Now()
 	res.Err = cmd.Run()
+	res.Duration = time.Since(now)
 
 	if cmd.ProcessState != nil {
 		res.Exit = cmd.ProcessState.ExitCode()

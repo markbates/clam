@@ -2,4 +2,4 @@ module github.com/markbates/clam
 
 go 1.18
 
-require golang.org/x/exp v0.0.0-20220428152302-39d4317da171
+require golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d
