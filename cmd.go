@@ -75,12 +75,18 @@ func (c *Cmd) Run(ctx context.Context, args ...string) (*Result, error) {
 	res.Stdout = stdout.Bytes()
 	res.Stdout = bytes.TrimSpace(res.Stdout)
 
-	if res.Err != nil {
-		err := res.Err
-		err = fmt.Errorf("%w\n%s", err, string(res.Stderr))
-		err = fmt.Errorf("%s: %w", res.CmdString(), err)
-		return res, err
+	if res.Err == nil {
+		return res, nil
 	}
 
-	return res, nil
+	err := RunError{
+		Err:    res.Err,
+		Args:   res.Args,
+		Dir:    res.Dir,
+		Env:    res.Env,
+		Exit:   res.Exit,
+		Output: append(res.Stdout, res.Stderr...),
+	}
+
+	return res, err
 }

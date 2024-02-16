@@ -48,6 +48,8 @@ func Test_Cmd_Bad(t *testing.T) {
 		t.Fatal("expected error")
 	}
 
+	// panic(err.Error())
+
 	eq(t, 2, res.Exit)
 
 	act := strings.TrimSpace(string(res.Stderr))
