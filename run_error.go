@@ -2,6 +2,7 @@ package clam
 
 import (
 	"encoding/json"
+	"errors"
 	"strings"
 
 	"github.com/markbates/hepa"
@@ -44,13 +45,31 @@ func (e RunError) Error() string {
 }
 
 func (e RunError) Unwrap() error {
+	type Unwrapper interface {
+		Unwrap() error
+	}
+
+	if _, ok := e.Err.(Unwrapper); ok {
+		return errors.Unwrap(e.Err)
+	}
+
 	return e.Err
 }
 
 func (e RunError) Is(target error) bool {
-	return e.Err == target
+	if _, ok := target.(RunError); ok {
+		return true
+	}
+
+	return errors.Is(e.Err, target)
 }
 
 func (e RunError) As(target any) bool {
-	return false
+	ex, ok := target.(*RunError)
+	if !ok {
+		return errors.As(e.Err, target)
+	}
+
+	(*ex) = e
+	return true
 }
